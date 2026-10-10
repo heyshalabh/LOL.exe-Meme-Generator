@@ -1,0 +1,17 @@
+
+{
+  "name": "LOL Meme Generator",
+  "short_name": "LOL",
+  "description": "Create and download hilarious memes!",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#0875ff",
+  "theme_color": "#0875ff",
+  "icons": [
+    {
+      "src": "lol-logo.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
