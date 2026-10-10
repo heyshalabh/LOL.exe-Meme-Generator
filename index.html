@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>LOL.exe — Meme Generator</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Bangers&family=Luckiest+Guy&family=Titan+One&family=Space+Mono:wght@400;700&display=swap">
+<style>
+:root{
+  --bg:#f4efdc; --panel:#fffdf4; --ink:#1d0f35; --purple:#6d28d9; --purple-d:#4c1d95;
+  --lime:#a3e635; --lime-d:#65a30d; --shadow:#1d0f35;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){--bg:#1a1030;--panel:#2a1b4a;--ink:#f4efdc;--purple:#8b5cf6;--purple-d:#c4b5fd;--lime:#a3e635;--lime-d:#84cc16;--shadow:#000}
+}
+:root[data-theme="dark"]{--bg:#1a1030;--panel:#2a1b4a;--ink:#f4efdc;--purple:#8b5cf6;--purple-d:#c4b5fd;--lime:#a3e635;--lime-d:#84cc16;--shadow:#000}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font-family:"Space Mono",ui-monospace,Menlo,Consolas,monospace; font-size:14px;
+  background-image:radial-gradient(var(--purple) 1.2px,transparent 1.2px);
+  background-size:22px 22px; background-position:0 0;
+}
+.wrap{max-width:1100px;margin:0 auto;padding:18px 14px 8px}
+.win{background:var(--panel);border:4px solid var(--ink);border-radius:10px;box-shadow:8px 8px 0 var(--shadow);overflow:hidden}
+.bar{display:flex;align-items:center;gap:10px;background:var(--purple);color:#fffcfc;padding:8px 12px;border-bottom:4px solid var(--ink)}
+.bar h1{margin:0;font:400 clamp(22px,5vw,34px)/1 "Titan One","Luckiest Guy",sans-serif;letter-spacing:1px;flex:1;text-shadow:3px 3px 0 black}
+.bar h1 span{color:var(--lime);display:inline-block;animation:wob 2.4s ease-in-out infinite}
+.bar h1 .cur{display:inline-block;width:.5em;height:.12em;background:var(--lime);margin-left:4px;animation:blink 1s steps(2) infinite;text-shadow:none}
+.dots{display:flex;gap:6px}
+.dots i{width:16px;height:16px;border:3px solid var(--ink);background:var(--lime);border-radius:3px;transition:transform .15s}
+.dots i:nth-child(2){background:#fff}.dots i:nth-child(3){background:#f472b6}
+.dots i:hover{transform:rotate(25deg) scale(1.25)}
+@keyframes wob{0%,100%{transform:rotate(-4deg)}50%{transform:rotate(5deg) translateY(-2px)}}
+@keyframes blink{50%{opacity:0}}
+.sub{margin:0;padding:8px 14px;border-bottom:4px dashed var(--ink);background:var(--lime);color:#1d0f35;font-weight:700;font-size:13px}
+.main{display:grid;grid-template-columns:minmax(280px,380px) 1fr;gap:18px;padding:16px}
+.ctl{display:flex;flex-direction:column;gap:12px}
+.box{border:3px solid var(--ink);border-radius:8px;padding:10px;background:var(--bg)}
+label,.lab{display:block;font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px}
+input[type=text],select,textarea{
+  width:100%;font:700 15px "Space Mono",monospace;color:var(--ink);background:var(--panel);
+  border:3px solid var(--ink);border-radius:6px;padding:8px 10px;outline:none;transition:transform .12s,box-shadow .12s
+}
+input[type=text]:focus,select:focus{box-shadow:4px 4px 0 var(--lime-d);transform:translate(-2px,-2px)}
+.row{display:flex;gap:10px;align-items:end;flex-wrap:wrap}
+.row>div{flex:1;min-width:90px}
+input[type=color]{width:100%;height:42px;border:3px solid var(--ink);border-radius:6px;background:var(--panel);padding:2px;cursor:pointer;transition:transform .15s}
+input[type=color]:hover{transform:rotate(-3deg) scale(1.05)}
+input[type=range]{width:100%;accent-color:var(--purple);height:24px;cursor:pointer}
+.val{float:right;color:var(--purple-d)}
+.btn{
+  font:400 18px "Titan One","Luckiest Guy",sans-serif;letter-spacing:.5px;color:#1d0f35;background:var(--lime);
+  border:4px solid var(--ink);border-radius:8px;padding:10px 14px;cursor:pointer;box-shadow:5px 5px 0 var(--shadow);
+  transition:transform .12s,box-shadow .12s,background .15s;display:inline-block;text-align:center
+}
+.btn:hover{transform:translate(-2px,-2px) rotate(-1.5deg);box-shadow:7px 7px 0 var(--shadow);background:#bef264}
+.btn:active{transform:translate(4px,4px);box-shadow:1px 1px 0 var(--shadow)}
+.btn.alt{background:#fff;color:#1d0f35}.btn.alt:hover{background:#ede9fe;transform:translate(-2px,-2px) rotate(1.5deg)}
+.btn.big{font-size:22px;background:var(--purple);color:#fff;width:100%}
+.btn.big:hover{background:#7c3aed;animation:jig .35s linear infinite}
+@keyframes jig{25%{transform:translate(-2px,-2px) rotate(-2deg)}75%{transform:translate(-2px,-2px) rotate(2deg)}}
+.btn.sm{font-size:14px;padding:6px 10px;box-shadow:3px 3px 0 var(--shadow)}
+.tog{display:flex;gap:8px;flex-wrap:wrap}
+.tog label{margin:0;flex:1;min-width:80px}
+.tog input{position:absolute;opacity:0;pointer-events:none}
+.tog span{display:block;text-align:center;padding:8px 6px;border:3px solid var(--ink);border-radius:6px;background:var(--panel);cursor:pointer;font-weight:700;transition:transform .12s,background .15s;user-select:none}
+.tog span:hover{transform:rotate(-2deg) scale(1.05)}
+.tog input:checked+span{background:var(--purple);color:#fff;box-shadow:inset 0 -4px 0 rgba(0,0,0,.25)}
+.tog input:focus-visible+span{outline:3px dashed var(--lime-d);outline-offset:2px}
+.stage{display:flex;flex-direction:column;gap:12px;min-width:0}
+.view{
+  border:4px solid var(--ink);border-radius:8px;background:
+   repeating-conic-gradient(#d9d2b8 0 25%,#ece6cf 0 50%) 0 0/20px 20px;
+  padding:10px;display:flex;align-items:center;justify-content:center;min-height:260px;position:relative;transition:transform .2s
+}
+.view.drag{transform:rotate(-1deg) scale(1.01);outline:5px dashed var(--purple);outline-offset:-5px}
+.view.pop{animation:pop .4s}
+@keyframes pop{30%{transform:scale(1.03) rotate(1deg)}60%{transform:scale(.99) rotate(-1deg)}}
+canvas{max-width:100%;max-height:70vh;height:auto;border:3px solid var(--ink);background:#fff;box-shadow:5px 5px 0 var(--shadow);display:block}
+.acts{display:flex;gap:10px;flex-wrap:wrap}
+.acts .btn{flex:1;min-width:140px}
+.msg{min-height:20px;font-weight:700;color:var(--purple-d)}
+.hint{font-size:12px;opacity:.75;margin:6px 0 0}
+footer{text-align:center;padding:18px 10px 24px;font-weight:700}
+footer b{background:var(--lime);color:#1d0f35;padding:2px 8px;border:3px solid var(--ink);border-radius:6px;display:inline-block;transition:transform .2s}
+footer b:hover{transform:rotate(-4deg) scale(1.08)}
+@media (max-width:760px){.main{grid-template-columns:1fr;padding:12px}.stage{order:-1}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+ <div class="win">
+  <div class="bar"><h1><span>LOL</span>.exe<i class="cur"></i></h1><div class="dots"><i></i><i></i><i></i></div></div>
+  <p class="sub">&gt; : MEMES&gt; make_funny.bat — upload a pic, type some words, ship the chaos.</p>
+  <div class="main">
+   <div class="ctl">
+    <div class="box">
+     <span class="lab">1. The picture</span>
+     <input type="file" id="file" accept="image/*" hidden>
+     <button class="btn alt" id="pick" style="width:100%">📂 Upload image</button>
+     <p class="hint">…or drag &amp; drop one onto the preview.</p>
+    </div>
+    <div class="box">
+     <span class="lab">2. The words</span>
+     <label for="top">Top text</label>
+     <input type="text" id="top" value="WHEN THE CODE WORKS" maxlength="120">
+     <label for="bot" style="margin-top:8px">Bottom text</label>
+     <input type="text" id="bot" value="AND YOU DON'T KNOW WHY" maxlength="120">
+     <button class="btn alt sm" id="rand" style="margin-top:10px">🎲 Surprise me</button>
+    </div>
+    <div class="box">
+     <span class="lab">3. The style</span>
+     <label for="font">Font</label>
+     <select id="font">
+      <option value="Impact">Impact (classic)</option>
+      <option value="Anton">Anton (tall &amp; loud)</option>
+      <option value="Bangers">Bangers (comic book)</option>
+      <option value="Luckiest Guy">Luckiest Guy (wacky)</option>
+      <option value="Titan One">Titan One (chunky)</option>
+     </select>
+     <div class="row" style="margin-top:10px">
+      <div><label for="fill">Text</label><input type="color" id="fill" value="#ffffff"></div>
+      <div><label for="stroke">Outline</label><input type="color" id="stroke" value="#000000"></div>
+     </div>
+     <label for="size" style="margin-top:10px">Size <span class="val" id="sizeV">9</span></label>
+     <input type="range" id="size" min="3" max="18" step="0.5" value="9">
+     <label for="sw" style="margin-top:6px">Outline thickness <span class="val" id="swV">6</span></label>
+     <input type="range" id="sw" min="0" max="14" step="1" value="6">
+     <div class="tog" style="margin-top:8px">
+      <label><input type="checkbox" id="bold" checked><span>B Bold</span></label>
+      <label><input type="checkbox" id="caps" checked><span>AA Caps</span></label>
+     </div>
+    </div>
+   </div>
+   <div class="stage">
+    <div class="view" id="view"><canvas id="cv" width="800" height="800" aria-label="Meme preview"></canvas></div>
+    <div class="msg" id="msg" role="status"></div>
+    <div class="acts">
+     <button class="btn big" id="dl">⬇ Download Meme PNG</button>
+     <button class="btn alt" id="reset">↺ Reset</button>
+    </div>
+   </div>
+  </div>
+ </div>
+</div>
+<footer>Developed by <b>Shalabh Suman</b> © 2026</footer>
+
+<script>
+(function(){
+  var $ = function(id){return document.getElementById(id)};
+  var cv = $('cv'), ctx = cv.getContext('2d'), view = $('view'), msg = $('msg');
+  var img = null, MAXD = 1400;
+  var DEF = {top:"WHEN THE CODE WORKS", bot:"AND YOU DON'T KNOW WHY"};
+  var jokes = [
+    ["ME: I'LL SLEEP EARLY TONIGHT","ALSO ME AT 3AM: ONE MORE VIDEO"],
+    ["IT WORKS ON MY MACHINE","SHIP THE MACHINE"],
+    ["ONE SMALL CHANGE","THE WHOLE APP IS ON FIRE"],
+    ["NOBODY:","ABSOLUTELY NOBODY:"],
+    ["TRIED TO FIX A BUG","CREATED 7 NEW FEATURES"],
+    ["MY PLAN","MY PLAN AFTER THE FIRST 5 MINUTES"]
+  ];
+
+  function wrap(text, maxW){
+    var out = [];
+    text.split('\n').forEach(function(p){
+      var words = p.split(/\s+/).filter(Boolean), line = '';
+      if(!words.length){return}
+      words.forEach(function(w){
+        var t = line ? line + ' ' + w : w;
+        if(ctx.measureText(t).width > maxW && line){ out.push(line); line = w; } else line = t;
+      });
+      if(line) out.push(line);
+    });
+    return out;
+  }
+
+  function block(text, where, W, H, fs, fontStr){
+    if(!text.trim()) return;
+    if($('caps').checked) text = text.toUpperCase();
+    ctx.font = fontStr;
+    var lines = wrap(text, W * 0.94), lh = fs * 1.08, pad = Math.max(10, fs * 0.25);
+    var y0 = where === 'top' ? pad : H - pad - lines.length * lh;
+    ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+    ctx.lineJoin = 'round'; ctx.miterLimit = 2;
+    var sw = +$('sw').value;
+    lines.forEach(function(l, i){
+      var y = y0 + i * lh;
+      if(sw > 0){
+        ctx.lineWidth = fs * sw / 30;
+        ctx.strokeStyle = $('stroke').value;
+        ctx.strokeText(l, W / 2, y);
+      }
+      ctx.fillStyle = $('fill').value;
+      ctx.fillText(l, W / 2, y);
+    });
+  }
+
+  function placeholder(W, H){
+    var g = ctx.createLinearGradient(0, 0, W, H);
+    g.addColorStop(0, '#6d28d9'); g.addColorStop(1, '#a3e635');
+    ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = 'rgba(255,255,255,.14)';
+    for(var y = 0; y < H; y += 80) for(var x = (y / 80 % 2) * 40; x < W; x += 80) ctx.fillRect(x, y, 40, 40);
+    ctx.fillStyle = '#f4efdc'; ctx.strokeStyle = '#1d0f35'; ctx.lineWidth = 8;
+    ctx.fillRect(W / 2 - 230, H / 2 - 70, 460, 140); ctx.strokeRect(W / 2 - 230, H / 2 - 70, 460, 140);
+    ctx.fillStyle = '#1d0f35'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.font = '700 40px "Space Mono", monospace'; ctx.fillText('(◕‿◕) NO IMAGE', W / 2, H / 2 - 20);
+    ctx.font = '700 24px "Space Mono", monospace'; ctx.fillText('upload one on the left!', W / 2, H / 2 + 28);
+  }
+
+  function draw(){
+    var W = 800, H = 800;
+    if(img){
+      var s = Math.min(1, MAXD / Math.max(img.naturalWidth, img.naturalHeight));
+      W = Math.round(img.naturalWidth * s); H = Math.round(img.naturalHeight * s);
+    }
+    if(cv.width !== W) cv.width = W;
+    if(cv.height !== H) cv.height = H;
+    if(img) ctx.drawImage(img, 0, 0, W, H); else placeholder(W, H);
+    var fs = W * (+$('size').value) / 100, f = $('font').value;
+    var fontStr = ($('bold').checked ? 'bold ' : '') + fs + 'px "' + f + '", Impact, "Arial Black", sans-serif';
+    block($('top').value, 'top', W, H, fs, fontStr);
+    block($('bot').value, 'bottom', W, H, fs, fontStr);
+  }
+
+  function loadFont(){
+    var f = $('font').value, w = $('bold').checked ? 'bold ' : '';
+    if(document.fonts && document.fonts.load){
+      document.fonts.load(w + '40px "' + f + '"').then(draw, draw);
+    }
+    draw();
+  }
+
+  function setImage(file){
+    if(!file || file.type.indexOf('image/') !== 0){ say('That is not an image 🤨'); return; }
+    var url = URL.createObjectURL(file), im = new Image();
+    im.onload = function(){
+      img = im; draw();
+      view.classList.remove('pop'); void view.offsetWidth; view.classList.add('pop');
+      say('Image loaded. Now be funny.');
+    };
+    im.onerror = function(){ say('Could not read that image 😵'); };
+    im.src = url;
+  }
+
+  function say(t){ msg.textContent = t; }
+
+  $('pick').onclick = function(){ $('file').click() };
+  $('file').onchange = function(e){ setImage(e.target.files[0]); e.target.value = ''; };
+  ['dragenter','dragover'].forEach(function(n){ view.addEventListener(n, function(e){ e.preventDefault(); view.classList.add('drag'); }); });
+  ['dragleave','drop'].forEach(function(n){ view.addEventListener(n, function(e){ e.preventDefault(); view.classList.remove('drag'); }); });
+  view.addEventListener('drop', function(e){ setImage(e.dataTransfer.files[0]); });
+
+  ['top','bot','fill','stroke','size','sw','caps'].forEach(function(id){
+    $(id).addEventListener('input', function(){
+      if(id === 'size') $('sizeV').textContent = $('size').value;
+      if(id === 'sw') $('swV').textContent = $('sw').value;
+      draw();
+    });
+  });
+  $('font').onchange = loadFont;
+  $('bold').onchange = loadFont;
+
+  $('rand').onclick = function(){
+    var j = jokes[Math.floor(Math.random() * jokes.length)];
+    $('top').value = j[0]; $('bot').value = j[1]; draw();
+  };
+
+  $('reset').onclick = function(){
+    img = null; $('top').value = DEF.top; $('bot').value = DEF.bot;
+    $('font').value = 'Impact'; $('fill').value = '#ffffff'; $('stroke').value = '#000000';
+    $('size').value = 9; $('sw').value = 6; $('sizeV').textContent = 9; $('swV').textContent = 6;
+    $('bold').checked = true; $('caps').checked = true; loadFont(); say('Fresh start. Nothing happened here.');
+  };
+
+  $('dl').onclick = function(){
+    draw();
+    var f = $('font').value;
+    var go = function(){
+      cv.toBlob(async function(blob){
+        if(!blob){ say('Export failed 😵'); return; }
+        var name = 'lol-meme-' + Date.now() + '.png';
+        try{
+          var d = (window.claude && window.claude.use) ? await window.claude.use('downloads') : null;
+          if(d){
+            await d.save({filename: name, data: blob});
+            say('Saved! Go spread the chaos. 🎉');
+          } else {
+            var a = document.createElement('a');
+            a.href = URL.createObjectURL(blob); a.download = name;
+            document.body.appendChild(a); a.click(); a.remove();
+            setTimeout(function(){ URL.revokeObjectURL(a.href) }, 4000);
+            say('Downloaded! 🎉');
+          }
+        }catch(err){
+          say(err && err.code === 'declined' ? 'Download cancelled.' : 'Download failed 😵 try again.');
+        }
+      }, 'image/png');
+    };
+    // make sure the chosen font is ready before the final export
+    if(document.fonts && document.fonts.load){
+      document.fonts.load(($('bold').checked ? 'bold ' : '') + '40px "' + f + '"').then(function(){ draw(); go(); }, go);
+    } else go();
+  };
+
+  if(document.fonts && document.fonts.ready) document.fonts.ready.then(draw);
+  draw();
+})();
+</script>
+</body>
+</html>
